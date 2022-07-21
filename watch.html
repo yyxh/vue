@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="watch-example">
+        <p>
+            ask a yes/no question:
+            <input v-model="question" />
+        </p>
+        <p>{{ answer }}</p>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+<script>
+    const watchExample = Vue.createApp({
+        data() {
+            return {
+                question: '',
+                answer: '...'
+            }
+        },
+        watch: {
+            question(newQuestion,oldQuestion){
+                console.log(newQuestion)
+                if(newQuestion.indexOf('?') > -1){
+                    this.getAnswer()
+                }
+            }
+        },
+        methods: {
+            getAnswer() {
+                this.answer = 'thinking...'
+                axios
+                .get('https://yesno.wtf/api')
+                .then(res => {
+                    this.answer = res.data.answer
+                })
+                .catch(error => {
+                    this.answer = 'Error'
+                })
+            }
+        }
+    }).mount('#watch-example')
+</script>
+</html>
